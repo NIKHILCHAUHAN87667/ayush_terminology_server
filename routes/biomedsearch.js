@@ -1,7 +1,7 @@
 const express = require("express");
-const router = express.Router();    
+const router = express.Router();  
 
-const searchBiomedICD = require("./controllers");
+const searchBiomedICD = require("./controllers/biomedcontroller");
 
 router.post("/", searchBiomedICD);
 
