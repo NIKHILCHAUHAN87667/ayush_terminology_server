@@ -121,7 +121,7 @@ router.get("/namaste", async (req, res) => {
  * 2️⃣  /lookup/ICD_TM2
  *     Autocomplete ICD_TM2 codes
  */
-router.get("/icdtm2", async (req, res) => {
+router.post("/icdtm2", async (req, res) => {
   const q = (req.query.q || "").trim();
   const limit = parseInt(req.query.limit || "20");
 
