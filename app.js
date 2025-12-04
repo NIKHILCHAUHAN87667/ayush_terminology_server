@@ -5,7 +5,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const mongoose = require('./config/db');
-const biomedRoutes = require("./biomedsearch");
+const biomedRoutes = require("./routes/biomedsearch");
 app.use(express.json());
 app.use(cors());
 
