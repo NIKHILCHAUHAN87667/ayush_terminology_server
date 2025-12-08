@@ -127,7 +127,7 @@ router.get("/icdtm2", async (req, res) => {
 
   if (!q) return res.json({ results: [] });
 
-  const results = await autocomplete("ICDTM2_FHIR_CODESYSTEM", q, limit);
+  const results = await autocomplete("ICDTM2_FHIR_  CODESYSTEM", q, limit);
   console.log(results);
   return res.json({ results });
 });

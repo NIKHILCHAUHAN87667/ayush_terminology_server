@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AyushSetu Terminology Microservice Docs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-elevated: #020617;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.1);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+      --danger: #f97373;
+      --code-bg: #020617;
+      --radius: 10px;
+      --shadow: 0 10px 35px rgba(15, 23, 42, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #1e293b 0, #020617 50%);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .layout {
+      display: flex;
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 16px;
+      gap: 16px;
+    }
+
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 18px 16px 22px;
+      position: sticky;
+      top: 16px;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+    }
+
+    .sidebar h1 {
+      font-size: 18px;
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar h1 span.logo-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .sidebar .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .sidebar .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .sidebar nav {
+      font-size: 13px;
+    }
+
+    .nav-section-title {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 10px;
+      color: var(--muted);
+      margin: 12px 0 4px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar li {
+      margin: 2px 0;
+    }
+
+    .sidebar a.nav-link {
+      display: block;
+      padding: 6px 8px;
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: background 0.15s, border 0.15s, color 0.15s;
+    }
+
+    .sidebar a.nav-link:hover {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: var(--border);
+    }
+
+    .sidebar small {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .content {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.94);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 24px 26px 32px;
+      overflow: auto;
+      max-height: calc(100vh - 32px);
+    }
+
+    .content h2 {
+      margin-top: 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      font-size: 22px;
+    }
+
+    .content h3 {
+      margin-top: 24px;
+      font-size: 18px;
+    }
+
+    .content h4 {
+      margin-top: 18px;
+      font-size: 15px;
+    }
+
+    p {
+      line-height: 1.6;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    ul, ol {
+      font-size: 14px;
+      color: var(--muted);
+      padding-left: 20px;
+    }
+
+    code {
+      background: var(--code-bg);
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+        "Courier New", monospace;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 10px 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 12px;
+      line-height: 1.5;
+      margin: 12px 0;
+    }
+
+    pre code {
+      border: none;
+      padding: 0;
+      background: transparent;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 2px;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .endpoint-card {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      margin: 12px 0 18px;
+      background: radial-gradient(circle at top left, #1f2937 0, #020617 60%);
+    }
+
+    .endpoint-card .verb {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .verb-get {
+      background: rgba(34, 197, 94, 0.08);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.5);
+    }
+
+    .verb-post {
+      background: rgba(59, 130, 246, 0.1);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.5);
+    }
+
+    .endpoint-path {
+      font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+        "Courier New", monospace;
+      font-size: 13px;
+      color: var(--accent);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--muted);
+    }
+
+    .tag-fhir {
+      border-color: rgba(52, 211, 153, 0.6);
+      color: #6ee7b7;
+    }
+
+    .tag-beta {
+      border-color: rgba(249, 115, 22, 0.7);
+      color: #fdba74;
+    }
+
+    .callout {
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 8px 10px;
+      background: rgba(24, 35, 55, 0.9);
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin: 12px 0;
+    }
+
+    .callout strong {
+      color: var(--text);
+    }
+
+    .callout-icon {
+      font-size: 16px;
+      margin-top: 1px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 10px 0 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .footer {
+      margin-top: 32px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .footer span.highlight {
+      color: var(--accent);
+    }
+
+    @media (max-width: 900px) {
+      body {
+        display: block;
+      }
+      .layout {
+        flex-direction: column;
+        max-width: 100%;
+        padding: 12px;
+      }
+      .sidebar {
+        position: static;
+        max-height: none;
+        width: 100%;
+        display: none;
+      }
+      .sidebar.open {
+        display: block;
+      }
+      .content {
+        max-height: none;
+      }
+      .mobile-toggle {
+        display: flex;
+      }
+    }
+
+    .mobile-toggle {
+      display: none;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 20;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      gap: 6px;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+<body>
+  <button class="mobile-toggle" onclick="toggleSidebar()">
+    ☰ Menu
+  </button>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <h1>
+        <span class="logo-pill">A</span>
+        AyushSetu Terminology
+      </h1>
+      <div class="subtitle">
+        FHIR R4 terminology microservice for NAMASTE, ICD-11 TM2 & Biomedicine.
+      </div>
+      <div class="badge">
+        <span>⚡</span> SIH 2025 Prototype
+      </div>
+
+      <nav>
+        <div class="nav-section">
+          <div class="nav-section-title">Overview</div>
+          <ul>
+            <li><a class="nav-link" href="#intro">Introduction</a></li>
+            <li><a class="nav-link" href="#getting-started">Getting Started</a></li>
+            <li><a class="nav-link" href="#auth">Authentication</a></li>
+            <li><a class="nav-link" href="#terminologies">Terminology Sets</a></li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">API</div>
+          <ul>
+            <li><a class="nav-link" href="#endpoints">Endpoint Overview</a></li>
+            <li><a class="nav-link" href="#expand">/expand (lookup)</a></li>
+            <li><a class="nav-link" href="#translate">/translate</a></li>
+            <li><a class="nav-link" href="#bundle-upload">/bundle/upload</a></li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Engine</div>
+          <ul>
+            <li><a class="nav-link" href="#semantic-engine">Semantic Mapping Engine</a></li>
+            <li><a class="nav-link" href="#offline-mode">Offline Mode</a></li>
+            <li><a class="nav-link" href="#versioning">Versioning & Audit</a></li>
+            <li><a class="nav-link" href="#errors">Error Contract</a></li>
+          </ul>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Meta</div>
+          <ul>
+            <li><a class="nav-link" href="#roadmap">Roadmap</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div style="margin-top:16px; font-size:11px; color:var(--muted);">
+        Base URL (prod):<br />
+        <code>https://your-production-url/</code>
+      </div>
+    </aside>
+
+    <main class="content">
+      <!-- INTRO -->
+      <section id="intro">
+        <h2>Introduction</h2>
+        <p>
+          The <strong>AyushSetu Terminology Microservice</strong> is a lightweight,
+          FHIR-compliant service that bridges India’s <strong>NAMASTE</strong>
+          traditional medicine terminologies with <strong>WHO ICD-11 TM2</strong> and
+          Biomedicine.
+        </p>
+
+        <div class="pill-row">
+          <div class="pill">✓ NAMASTE (Ayurveda, Siddha, Unani)</div>
+          <div class="pill">✓ ICD-11 TM2 disorders</div>
+          <div class="pill">✓ ICD-11 Biomedicine</div>
+          <div class="pill">✓ WHO Ayurveda Terminologies</div>
+          <div class="pill">✓ FHIR R4 compliant</div>
+          <div class="pill">✓ Online + Offline modes</div>
+        </div>
+
+        <p>
+          EMR vendors can plug this service in as a terminology plugin to support:
+        </p>
+        <ul>
+          <li>Auto-complete of NAMASTE codes inside clinical UI</li>
+          <li>Dual coding: <strong>NAMASTE ↔ ICD-11 TM2 ↔ Biomedicine</strong></li>
+          <li>FHIR Bundle upload with double-coded conditions</li>
+          <li>Semantic search and mapping using modern embedding models</li>
+        </ul>
+      </section>
+
+      <!-- GETTING STARTED -->
+      <section id="getting-started">
+        <h3>Getting Started</h3>
+
+        <h4>Base URLs</h4>
+        <pre><code># Production
+https://your-production-url/
+
+# Local development
+http://localhost:3000/</code></pre>
+
+        <h4>Setup</h4>
+        <pre><code>git clone https://github.com/your-org/ayushsetu-terminology
+cd ayushsetu-terminology
+npm install
+
+# Start dev server
+npm start</code></pre>
+
+        <div class="callout">
+          <div class="callout-icon">💡</div>
+          <div>
+            <strong>Note:</strong> The terminology datasets (NAMASTE CodeSystem and
+            ConceptMap) are stored in MongoDB. Pinecone is used for semantic search.
+          </div>
+        </div>
+      </section>
+
+      <!-- AUTH -->
+      <section id="auth">
+        <h3>Authentication (ABHA-style Mock)</h3>
+        <p>
+          The problem statement requires OAuth 2.0 with ABHA-based identity and audit
+          metadata. For the SIH prototype, we use a <strong>mock validator</strong>:
+        </p>
+
+        <h4>Request Header</h4>
+        <pre><code>Authorization: Bearer &lt;ABHA-like-token&gt;</code></pre>
+
+        <ul>
+          <li>Any non-empty bearer token is treated as valid.</li>
+          <li>Token subject is logged into audit metadata.</li>
+          <li>Production deployment can swap this with actual ABDM OAuth validation.</li>
+        </ul>
+      </section>
+
+      <!-- TERMINOLOGIES -->
+      <section id="terminologies">
+        <h3>Terminology Sets</h3>
+        <p>The microservice loads and serves multiple terminology systems:</p>
+
+        <ul>
+          <li>
+            <strong>NAMASTE CodeSystem</strong>  
+            ~4,300 disorder concepts across Ayurveda, Siddha, and Unani.
+          </li>
+          <li>
+            <strong>ICD-11 TM2 Disorders</strong>  
+            ~310 disorder codes fetched from WHO ICD API and cached.
+          </li>
+          <li>
+            <strong>ICD-11 Biomedicine</strong>  
+            Optional dual-coding link for insurance/analytics.
+          </li>
+          <li>
+            <strong>WHO Standardised International Ayurveda Terminologies</strong>
+          </li>
+          <li>
+            <strong>Index Terms (MMS Browser)</strong>  
+            Used as multilingual bridge and validator for mappings.
+          </li>
+        </ul>
+      </section>
+
+      <!-- ENDPOINT OVERVIEW -->
+      <section id="endpoints">
+        <h3>Endpoint Overview</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>GET</td>
+                <td><code>/expand/namaste</code></td>
+                <td>FHIR-like ValueSet expansion (autocomplete)</td>
+              </tr>
+              <tr>
+                <td>POST</td>
+                <td><code>/translate/namaste-to-tm2</code></td>
+                <td>Translate NAMASTE → ICD-11 TM2</td>
+              </tr>
+              <tr>
+                <td>POST</td>
+                <td><code>/translate/to-namaste</code></td>
+                <td>Reverse: ICD-11 TM2 → NAMASTE (top 10)</td>
+              </tr>
+              <tr>
+                <td>POST</td>
+                <td><code>/bundle/upload</code></td>
+                <td>Upload FHIR Bundle with dual-coded Conditions</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- EXPAND -->
+      <section id="expand">
+        <h3>/expand (NAMASTE lookup)</h3>
+
+        <div class="endpoint-card">
+          <div class="verb verb-get">GET</div>
+          <div class="endpoint-path">/expand/namaste?q=&lt;term&gt;</div>
+          <div class="tag-row">
+            <span class="tag tag-fhir">FHIR $expand-style</span>
+            <span class="tag">ValueSet-like response</span>
+          </div>
+
+          <p style="margin-top:10px;">
+            Returns an expansion over the NAMASTE CodeSystem filtered by the search text.
+            Designed for use in EMR autocomplete widgets.
+          </p>
+
+          <h4>Example Request</h4>
+          <pre><code>GET /expand/namaste?q=fever
+Authorization: Bearer demo-token</code></pre>
+
+          <h4>Example Response</h4>
+          <pre><code>{
+  "resourceType": "ValueSet",
+  "expansion": {
+    "total": 3,
+    "contains": [
+      {
+        "code": "AAA-3.9",
+        "display": "jvara (fever)",
+        "definition": "Fever due to doṣa imbalance..."
+      },
+      {
+        "code": "BBB-1.2",
+        "display": "jvara with cough",
+        "definition": "Fever associated with cough..."
+      }
+    ]
+  }
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- TRANSLATE -->
+      <section id="translate">
+        <h3>/translate (ConceptMap-powered)</h3>
+
+        <h4>1. NAMASTE → ICD-11 TM2</h4>
+        <div class="endpoint-card">
+          <div class="verb verb-post">POST</div>
+          <div class="endpoint-path">/translate/namaste-to-tm2</div>
+          <div class="tag-row">
+            <span class="tag tag-fhir">FHIR $translate-style</span>
+            <span class="tag">Uses ConceptMap + semantic engine</span>
+          </div>
+
+          <p>
+            Takes a NAMASTE code and returns the <strong>best matching TM2 code</strong>
+            with a confidence score.
+          </p>
+
+          <h4>Example Request</h4>
+          <pre><code>POST /translate/namaste-to-tm2
+Content-Type: application/json
+Authorization: Bearer demo-token
+
+{
+  "code": "AAA-3.9"
+}</code></pre>
+
+          <h4>Example Response</h4>
+          <pre><code>{
+  "from": "NAMASTE",
+  "inputCode": "AAA-3.9",
+  "bestMatch": {
+    "code": "SL40",
+    "display": "Bronchial asthma disorder (TM2)",
+    "equivalence": "related",
+    "confidence": 91.4,
+    "comment": "auto-mapped; cosine=0.937"
+  }
+}</code></pre>
+        </div>
+
+        <h4>2. ICD-11 TM2 → NAMASTE (reverse)</h4>
+        <div class="endpoint-card">
+          <div class="verb verb-post">POST</div>
+          <div class="endpoint-path">/translate/to-namaste</div>
+          <div class="tag-row">
+            <span class="tag tag-fhir">FHIR-like reverse lookup</span>
+            <span class="tag">Top 10 mappings</span>
+          </div>
+
+          <p>
+            Returns up to <strong>10 NAMASTE codes</strong> that map to the given TM2
+            code, ordered by descending confidence.
+          </p>
+
+          <h4>Example Request</h4>
+          <pre><code>POST /translate/to-namaste
+Content-Type: application/json
+Authorization: Bearer demo-token
+
+{
+  "code": "SL40"
+}</code></pre>
+
+          <h4>Example Response</h4>
+          <pre><code>{
+  "from": "ICD-TM2",
+  "inputCode": "SL40",
+  "mappedTo": [
+    {
+      "namasteCode": "D",
+      "namasteDisplay": "Amrāḍ-i-Niẓām-i-Tanaffus",
+      "equivalence": "equivalent",
+      "confidence": 95.2,
+      "comment": "auto-mapped; cosine=0.937"
+    },
+    {
+      "namasteCode": "D-6",
+      "namasteDisplay": "Rabw",
+      "equivalence": "equivalent",
+      "confidence": 94.1,
+      "comment": "auto-mapped; cosine=0.935"
+    }
+  ],
+  "count": 2
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- BUNDLE UPLOAD -->
+      <section id="bundle-upload">
+        <h3>/bundle/upload (Dual-coded encounters)</h3>
+
+        <div class="endpoint-card">
+          <div class="verb verb-post">POST</div>
+          <div class="endpoint-path">/bundle/upload</div>
+          <div class="tag-row">
+            <span class="tag tag-fhir">FHIR Bundle</span>
+            <span class="tag">Problem List & Conditions</span>
+          </div>
+
+          <p>
+            Accepts a FHIR R4 <code>Bundle</code> that includes
+            <code>Condition</code> resources coded with both:
+          </p>
+          <ul>
+            <li><code>NAMASTE</code> terminologies</li>
+            <li><code>ICD11TM2</code> / Biomedicine codes</li>
+          </ul>
+
+          <h4>Example Condition snippet</h4>
+          <pre><code>{
+  "resourceType": "Condition",
+  "code": {
+    "coding": [
+      {
+        "system": "https://purl.org/ayush/namaste",
+        "code": "AAA-3.9",
+        "display": "jvara (fever)"
+      },
+      {
+        "system": "http://id.who.int/icd11/tm2",
+        "code": "SP52",
+        "display": "Fever disorder with excessive salivation (TM2)"
+      }
+    ]
+  }
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- SEMANTIC ENGINE -->
+      <section id="semantic-engine">
+        <h3>Semantic Mapping Engine</h3>
+
+        <p>
+          The NAMASTE ↔ TM2 mapping is powered by a semantic engine that combines
+          vector search, multilingual embeddings, and a logistic confidence scaler.
+        </p>
+
+        <h4>Pipeline</h4>
+        <ol>
+          <li>Take NAMASTE definition (and display text)</li>
+          <li>Generate embedding with Pinecone-hosted model (e.g. Llama / E5)</li>
+          <li>Search TM2 index (integrated embedding index)</li>
+          <li>Pick top K candidates and compute cosine similarity</li>
+          <li>
+            Scale raw cosine to 0–100 confidence via a logistic function (more
+            intuitive for clinicians)
+          </li>
+          <li>
+            If confidence &lt; 70% → call LLM (via OpenRouter) to choose the best
+            candidate from short-list
+          </li>
+        </ol>
+
+        <h4>Confidence Interpretation</h4>
+        <ul>
+          <li><strong>≥ 85%</strong> → <code>equivalent</code></li>
+          <li><strong>60–84%</strong> → <code>related</code></li>
+          <li><strong>&lt; 60%</strong> → <code>wider</code> / broader mapping</li>
+        </ul>
+
+        <div class="callout">
+          <div class="callout-icon">🧠</div>
+          <div>
+            <strong>PHI safety:</strong> no patient identifiers are ever sent to LLMs.
+            Only terminology labels (code / display / definition) are used for
+            adjudication.
+          </div>
+        </div>
+      </section>
+
+      <!-- OFFLINE MODE -->
+      <section id="offline-mode">
+        <h3>Offline Mode (No Internet EMR)</h3>
+
+        <p>
+          For EMRs in low-connectivity settings, the service can run as a local SDK /
+          microservice:
+        </p>
+
+        <ul>
+          <li>Pre-bundled NAMASTE CodeSystem</li>
+          <li>Pre-generated ConceptMap (NAMASTE ↔ TM2)</li>
+          <li>Local lookup and translate functions (no Pinecone / cloud)</li>
+          <li>Optionally packaged as a single executable or Docker image</li>
+        </ul>
+
+        <pre><code># Example offline start
+node offline-server.js</code></pre>
+      </section>
+
+      <!-- VERSIONING & AUDIT -->
+      <section id="versioning">
+        <h3>Versioning & Audit</h3>
+
+        <p>
+          Each terminology artifact follows India’s 2016 EHR Standards by storing
+          version and provenance.
+        </p>
+
+        <ul>
+          <li>CodeSystem.version (e.g. <code>2025-11-26</code>)</li>
+          <li>ConceptMap.version with regeneration date</li>
+          <li>Audit metadata per request (token, timestamp, operation)</li>
+        </ul>
+      </section>
+
+      <!-- ERRORS -->
+      <section id="errors">
+        <h3>Error Contract</h3>
+
+        <p>
+          Errors are returned as simple JSON, and can be wrapped as FHIR
+          <code>OperationOutcome</code> if required.
+        </p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>HTTP</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>400</td>
+                <td>Missing or invalid parameters</td>
+              </tr>
+              <tr>
+                <td>401</td>
+                <td>Missing / invalid bearer token</td>
+              </tr>
+              <tr>
+                <td>404</td>
+                <td>Code not found in terminology</td>
+              </tr>
+              <tr>
+                <td>422</td>
+                <td>Malformed FHIR payload</td>
+              </tr>
+              <tr>
+                <td>500</td>
+                <td>Unexpected server error</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>Example 404</h4>
+        <pre><code>{
+  "error": "No reverse mapping found (ICD→NAMASTE)",
+  "code": "SL99"
+}</code></pre>
+      </section>
+
+      <!-- ROADMAP -->
+      <section id="roadmap">
+        <h3>Roadmap</h3>
+
+        <h4>Phase 1 – SIH Prototype</h4>
+        <ul>
+          <li>✅ Ingest NAMASTE CSV → FHIR CodeSystem</li>
+          <li>✅ Ingest ICD-11 TM2 via WHO API</li>
+          <li>✅ Semantic mapping engine + logistic confidence</li>
+          <li>✅ FHIR-style <code>/expand</code> and <code>/translate</code></li>
+          <li>✅ FHIR Bundle upload with dual coding</li>
+          <li>✅ Online + offline modes</li>
+        </ul>
+
+        <h4>Phase 2 – Post-SIH</h4>
+        <ul>
+          <li>Ontological similarity using Ayurveda hierarchies</li>
+          <li>Full ABDM OAuth & consent-based access control</li>
+          <li>Admin UI for reviewing & correcting doubtful mappings</li>
+          <li>Continuous terminology update pipeline</li>
+        </ul>
+      </section>
+
+      <div class="footer">
+        <span>
+          Built for <span class="highlight">Smart India Hackathon</span> – Terminology
+          Microservice Track
+        </span>
+        <span>AyushSetu Team · 2025</span>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      var sb = document.getElementById("sidebar");
+      sb.classList.toggle("open");
+    }
+
+    // Smooth-ish scroll for anchor links
+    document.querySelectorAll('a.nav-link').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href').slice(1);
+        const target = document.getElementById(targetId);
+        if (target) {
+          e.preventDefault();
+          const top = target.getBoundingClientRect().top + window.scrollY - 16;
+          window.scrollTo({ top, behavior: "smooth" });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
