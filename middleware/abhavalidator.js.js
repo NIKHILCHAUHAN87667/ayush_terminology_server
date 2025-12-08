@@ -63,6 +63,7 @@ router.post("/mock-abha/token", validateAbha, (req, res) => {
     token: mockToken,
     tokenType: "Bearer",
     expiresIn: 3600,
+    expiresAt: Date.now() + 3600 * 1000,
     mock: true,
     payload: req.body,
   });

@@ -25,7 +25,7 @@ async function initDB() {
   console.log("Connected to MongoDB:", DB_NAME);
 }
 initDB();
-
+``
 /**
  * Generic autocomplete function
  */
