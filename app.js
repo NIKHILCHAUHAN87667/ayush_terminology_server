@@ -8,6 +8,8 @@ const mongoose = require('./config/db');
 app.use(express.json());
 
 // Routes
+
+app.use(cors());
 app.use('/api/bundle', authMiddleware, require('./routes/bundleRoutes'));
 app.use('/api/expand', authMiddleware, require('./routes/expand'));
 app.use('/api/translate', authMiddleware, require('./routes/translate'));
