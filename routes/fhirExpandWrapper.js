@@ -19,6 +19,7 @@ router.get("/$expand", async (req, res) => {
     const system = req.query.system;
     const filter = req.query.filter || "";
     const count = req.query.count || 20;
+    console.log("FHIR $expand called with", { system, filter, count });
 
     if (!system)
       return res.status(400).json({
@@ -31,6 +32,7 @@ router.get("/$expand", async (req, res) => {
       });
 
     const endpoint = SYSTEM_MAP[system];
+    console.log("Mapped system to endpoint:", endpoint);
 
     if (!endpoint)
       return res.status(400).json({
@@ -55,8 +57,10 @@ router.get("/$expand", async (req, res) => {
       `${INTERNAL_BASE}${endpoint}`,
       axiosConfig
     );
+    console.log(resp.data);
 
     const items = resp.data.results || [];
+    console.log(items);
 
     // Convert to FHIR ValueSet.expansion
     res.json({
