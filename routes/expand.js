@@ -131,5 +131,16 @@ router.get("/icdtm2", async (req, res) => {
   console.log(results);
   return res.json({ results });
 });
+
+router.get("/icd11", async (req, res) => {
+  const q = (req.query.q || "").trim();
+  const limit = parseInt(req.query.limit || "20");
+
+  if (!q) return res.json({ results: [] });
+
+  const results = await autocomplete("ICDTM2_FHIR_CODESYSTEM", q, limit);
+  console.log(results);
+  return res.json({ results });
+});
 module.exports = router;
 

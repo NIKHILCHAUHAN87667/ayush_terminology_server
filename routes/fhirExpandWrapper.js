@@ -7,7 +7,7 @@ const axios = require("axios");
 const SYSTEM_MAP = {
   "https://purl.org/ayush/namaste": "/expand/namaste",
   "http://id.who.int/icd/release/11/tm2": "/expand/icdtm2",
-  "http://id.who.int/icd/release/11/mms": "/expand/biomed"
+  "http://id.who.int/icd/release/11/mms": "/expand/icd11"
   // add WITA later →
   // "https://purl.org/ayush/wita": "/expand/wita"
 };
