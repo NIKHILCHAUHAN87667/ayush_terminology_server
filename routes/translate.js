@@ -2,7 +2,7 @@ const express = require('express');
 const { MongoClient } = require('mongodb');
 const { createClient } = require('redis');
 require('dotenv').config();
-
+const { searchICD11 } = require('../controllers/VectorSearchICD11');
 const router = express.Router();
 
 // --------------------------------------
@@ -164,6 +164,9 @@ router.post('/to-icdtm2', async (req, res) => {
 // 2️⃣ POST /translate/to-namaste
 // ICD TM2 → NAMASTE (FAST via Redis HGET)
 // =====================================================
+
+
+
 router.post('/to-namaste', async (req, res) => {
   try {
     const code = req.body.code?.trim();
@@ -188,6 +191,68 @@ router.post('/to-namaste', async (req, res) => {
   } catch (err) {
     console.error("Translate Reverse Error:", err);
     res.status(500).json({ error: "Server error" });
+  }
+});
+
+
+
+
+
+
+
+router.post('/to-icd11', async (req, res) => {
+  try {
+    // Accept JSON body (wrapper sends { code, system, ... })
+    const code = req.body?.code?.trim();
+    let display = req.body?.display?.trim() || "";
+    let definition = req.body?.definition?.trim() || "";
+
+    // If code supplied, try to fetch the matching concept element from the codesystem doc
+    if (code) {
+      const tm2doc = await client.db('ayushsetu')
+        .collection('ICDTM2_FHIR_CODESYSTEM')
+        .findOne(
+          { "concept.code": code },
+          { projection: { "concept.$": 1 } }
+        );
+
+      if (tm2doc?.concept?.[0]) {
+        const el = tm2doc.concept[0];
+        // do not overwrite any explicit display/definition passed in body
+        display = display || el.display || "";
+        definition = definition || el.definition || "";
+      }
+    }
+
+    if (!code && !display && !definition) {
+      return res.status(400).json({ error: "At least one of code, display or definition must be provided" });
+    }
+
+    const queryText = [display, definition].filter(Boolean).join(" ").trim();
+    if (!queryText) {
+      return res.status(400).json({ error: "No text available to search" });
+    }
+
+    // Vector search
+    const matches = await searchICD11(queryText, 5);
+
+    // Normalize to mappedTo format expected by the FHIR wrapper
+    const mappedTo = (matches || []).map(h => ({
+      code: h.id,
+      display: h.text,
+      confidence: h.score,
+      category: h.category || null
+    }));
+
+    res.json({
+      from: "ICD11-vector",
+      input: { code: code || null, display: display || null, definition: definition || null },
+      count: mappedTo.length,
+      mappedTo
+    });
+  } catch (err) {
+    console.error("to-icd11 error:", err);
+    res.status(500).json({ error: "Server error", details: err?.message || String(err) });
   }
 });
 
