@@ -7,6 +7,7 @@ const INTERNAL_BASE = process.env.INTERNAL_BASE || "http://localhost:3000";
 
 const NAMASTE_SYSTEM = "https://purl.org/ayush/namaste";
 const ICD_TM2_SYSTEM = "http://id.who.int/icd11/tm2";
+const ICD11_SYSTEM = "http://id.who.int/icd/release/11";
 
 router.post("/$translate", async (req, res) => {
   try {
@@ -49,7 +50,11 @@ router.post("/$translate", async (req, res) => {
       direction = "to-namaste";
     } else if (target === ICD_TM2_SYSTEM || system === NAMASTE_SYSTEM) {
       direction = "to-icdtm2";
-    } else {
+    } 
+    else if (target === ICD11_SYSTEM || system === ICD11_SYSTEM) {
+      direction = "to-icd11";
+    }
+    else {
       return res.status(400).json({
         resourceType: "OperationOutcome",
         issue: [{
@@ -70,7 +75,13 @@ router.post("/$translate", async (req, res) => {
 
     const axiosConfig = authHeader ? { headers: { Authorization: authHeader } } : {};
 
-    const response = await axios.post(`${INTERNAL_BASE}/api/translate/${direction}`, { code }, axiosConfig);
+    // Build request body per direction (to-icd11 needs the source system as well)
+    let requestBody = { code };
+    if (direction === "to-icd11") {
+      requestBody.system = system;
+    }
+
+    const response = await axios.post(`${INTERNAL_BASE}/api/translate/${direction}`, requestBody, axiosConfig);
     const data = response.data;
 
     // normalize results
@@ -81,6 +92,12 @@ router.post("/$translate", async (req, res) => {
       const displayOut =
         m.display || m.namasteDisplay || m.targetDisplay || null;
 
+      // choose output system per direction
+      const outSystem =
+        direction === "to-icdtm2" ? ICD_TM2_SYSTEM :
+        direction === "to-icd11" ? ICD11_SYSTEM :
+        NAMASTE_SYSTEM;
+
       return {
         name: "match",
         part: [
@@ -88,7 +105,7 @@ router.post("/$translate", async (req, res) => {
           {
             name: "concept",
             valueCoding: {
-              system: direction === "to-icdtm2" ? ICD_TM2_SYSTEM : NAMASTE_SYSTEM,
+              system: outSystem,
               code: codeOut,
               display: displayOut
             }
